@@ -1,0 +1,716 @@
+/* Modern Git Visualizer Styles */
+
+:root {
+  /* Refined Color System */
+  --hue-primary: 220;    /* Blue for local branches */
+  --hue-secondary: 280;  /* Purple for remote branches */
+  --hue-accent: 200;     /* Cyan for special states */
+  --hue-success: 150;    /* Green for HEAD */
+  --hue-warning: 30;     /* Orange for merges */
+  --hue-error: 0;        /* Red for errors */
+
+  /* Light Theme Colors */
+  --primary: hsl(var(--hue-primary), 70%, 50%);
+  --primary-light: hsl(var(--hue-primary), 70%, 95%);
+  --primary-dark: hsl(var(--hue-primary), 70%, 40%);
+  
+  --secondary: hsl(var(--hue-secondary), 70%, 50%);
+  --secondary-light: hsl(var(--hue-secondary), 70%, 95%);
+  --secondary-dark: hsl(var(--hue-secondary), 70%, 40%);
+  
+  --accent: hsl(var(--hue-accent), 70%, 50%);
+  --success: hsl(var(--hue-success), 70%, 50%);
+  --warning: hsl(var(--hue-warning), 70%, 50%);
+  --error: hsl(var(--hue-error), 70%, 50%);
+  
+  --background: hsl(220, 20%, 98%);
+  --surface: hsl(0, 0%, 100%);
+  --text: hsl(220, 20%, 20%);
+  --text-light: hsl(220, 20%, 40%);
+  --border: hsl(220, 20%, 90%);
+  
+  /* Git-specific colors */
+  --commit-local: var(--primary);
+  --commit-remote: var(--secondary);
+  --commit-head: var(--success);
+  --commit-merge: var(--warning);
+  --branch-local: var(--primary-light);
+  --branch-remote: var(--secondary-light);
+  
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Motion */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Theme Colors */
+[data-theme="dark"] {
+  --background: hsl(220, 20%, 10%);
+  --surface: hsl(220, 20%, 15%);
+  --text: hsl(220, 20%, 90%);
+  --text-light: hsl(220, 20%, 70%);
+  --border: hsl(220, 20%, 20%);
+  
+  --primary-light: hsl(var(--hue-primary), 70%, 20%);
+  --secondary-light: hsl(var(--hue-secondary), 70%, 20%);
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background-color var(--transition-normal),
+              color var(--transition-normal);
+}
+
+#last-command {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  font-size: 3.5rem;
+  opacity: 0.9;
+  font-weight: 600;
+  color: var(--primary);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.intro p, .concept-container p {
+  padding-top: 1rem;
+  max-width: 65ch;
+  margin: 0 auto;
+}
+
+a.openswitch {
+  display: block;
+  text-decoration: none;
+  color: var(--primary);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+a.openswitch:hover {
+  background-color: rgba(37, 99, 235, 0.1);
+}
+
+a.openswitch.selected {
+  font-weight: 600;
+  background-color: rgba(37, 99, 235, 0.15);
+}
+
+.command-list, .example-list {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.command-list a.openswitch {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9rem;
+}
+
+.concept-area {
+  padding-bottom: 2rem;
+}
+
+.concept-container {
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.playground-container {
+  margin-top: 2rem;
+  position: relative;
+  background-color: var(--surface);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+span.cmd {
+  background-color: var(--text);
+  color: var(--surface);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+
+.svg-container {
+  margin-left: 250px;
+  display: block;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.svg-container.remote-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(124, 58, 237, 0.05);
+  border-left: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+
+#ExplainGitZen-Container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+#ExplainGitZen-Container .svg-container {
+  display: inline-block;
+  border: 1px dotted #AAA;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 250px;
+  margin-left: 0;
+}
+
+#ExplainGitZen-Container .svg-container.remote-container {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  left: auto;
+  bottom: auto;
+  background-color: #EFF1FF;
+  border-left: 1px dotted #AAA;
+  border-bottom: 1px dotted #AAA;
+  min-height: 400px;
+}
+
+#ExplainGitZen-Container .playground-container {
+  position: absolute;
+  top: 0;
+  bottom: 20px;
+  right: 20px;
+  left: 20px;
+}
+
+.remote-name-display {
+  font-weight: bold;
+  text-align: right;
+}
+
+.control-box {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 250px;
+  vertical-align: bottom;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  border-radius: 0.5rem;
+}
+
+.control-box select {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+.control-box button {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  margin: 0.25rem;
+  border: none;
+  border-radius: 0.375rem;
+  background-color: var(--primary);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.control-box button:hover {
+  background-color: var(--primary-dark);
+}
+
+.control-box .log {
+  overflow-y: auto;
+  position: absolute;
+  background: var(--text);
+  top: 3rem;
+  bottom: 2.5rem;
+  left: 0;
+  right: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 1rem;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.875rem;
+  color: var(--surface);
+}
+
+.control-box .log .reflog-entry, 
+.control-box .log .log-entry {
+  display: inline-block;
+  padding-left: 1rem;
+  text-indent: -1rem;
+  margin: 0.25rem 0;
+}
+
+.control-box .log .command-entry {
+  padding-left: 1.5rem;
+  color: var(--surface);
+  line-height: 1.5;
+  background: url(../images/prompt.gif) no-repeat left center;
+}
+
+.control-box input[type="text"] {
+  position: absolute;
+  bottom: 0;
+  width: calc(100% - 1rem);
+  margin: 0.5rem;
+  padding: 0.75rem 1rem 0.75rem 2rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: var(--text) url(../images/prompt.gif) no-repeat 0.5rem center;
+  color: var(--surface);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.875rem;
+}
+
+.control-box .log .info {
+  color: var(--accent);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: rgba(6, 182, 212, 0.1);
+}
+
+.control-box .log .error {
+  color: var(--error);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Git visualization elements */
+circle.commit {
+  fill: var(--surface);
+  stroke: var(--text-light);
+  stroke-width: 2;
+  transition: transform var(--transition-fast);
+  cursor: pointer;
+}
+
+circle.commit:hover {
+  transform: scale(1.05);
+}
+
+circle.commit.reverted {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+circle.commit.reverted.checked-out {
+  fill: var(--accent);
+  filter: brightness(1.1);
+}
+
+circle.commit.rebased {
+  stroke: var(--secondary);
+  fill: var(--secondary);
+}
+
+circle.commit.rebased.checked-out {
+  fill: var(--secondary);
+  filter: brightness(1.1);
+}
+
+circle.commit.cherry-picked {
+  stroke: var(--warning);
+  fill: var(--warning);
+}
+
+circle.commit.cherry-picked.checked-out {
+  fill: var(--warning);
+  filter: brightness(1.1);
+}
+
+circle.commit.branchless {
+  fill: var(--surface);
+  stroke: var(--text-light);
+  stroke-dasharray: 4, 4;
+}
+
+circle.commit.checked-out {
+  fill: var(--success);
+  stroke: var(--success);
+  filter: brightness(1.1);
+}
+
+.commit-pointer {
+  stroke: var(--text-light);
+  stroke-width: 2;
+  transition: stroke var(--transition-normal);
+}
+
+.merge-pointer {
+  stroke: var(--text-light);
+  stroke-width: 2;
+  stroke-dasharray: 4, 4;
+  transition: stroke var(--transition-normal);
+}
+
+.commit-pointer.branchless, .merge-pointer.branchless {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+text.id-label {
+  text-anchor: middle;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  fill: var(--text-light);
+  font-size: 0.75rem;
+  transition: fill var(--transition-normal);
+}
+
+text.message-label {
+  text-anchor: middle;
+  font-family: 'Inter', sans-serif;
+  fill: var(--text);
+  font-size: 0.875rem;
+  transition: fill var(--transition-normal);
+}
+
+g.branch-tag > rect {
+  fill: var(--branch-local);
+  stroke: var(--primary);
+  stroke-width: 1;
+  rx: 6;
+  ry: 6;
+  transition: all var(--transition-normal);
+}
+
+g.branch-tag.git-tag > rect {
+  fill: var(--branch-remote);
+  stroke: var(--secondary);
+}
+
+g.branch-tag.remote-branch > rect {
+  fill: var(--branch-remote);
+  stroke: var(--secondary);
+}
+
+g.branch-tag > text {
+  text-anchor: middle;
+  fill: var(--text);
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  transition: fill var(--transition-normal);
+}
+
+g.head-tag > rect {
+  fill: var(--success);
+  stroke: var(--success);
+  stroke-width: 1;
+  rx: 6;
+  ry: 6;
+  filter: drop-shadow(var(--shadow-sm));
+  transition: all var(--transition-normal);
+}
+
+g.head-tag > text {
+  text-anchor: middle;
+  fill: var(--surface);
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes commitAppear {
+  from { 
+    transform: scale(0); 
+    opacity: 0; 
+  }
+  to { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+}
+
+@keyframes branchMove {
+  from { 
+    stroke-dashoffset: 100; 
+  }
+  to { 
+    stroke-dashoffset: 0; 
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .svg-container {
+    margin-left: 0;
+    margin-top: 250px;
+  }
+  
+  .control-box {
+    width: 100%;
+    height: 250px;
+  }
+  
+  #last-command {
+    font-size: 2.5rem;
+  }
+  
+  .minimap {
+    display: none;
+  }
+  
+  .command-log {
+    width: calc(100% - 2rem);
+    max-height: 150px;
+  }
+  
+  .zoom-controls {
+    bottom: 0.5rem;
+  }
+  
+  .remote-toggle {
+    top: auto;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+.theme-toggle .theme-icon {
+  width: 24px;
+  height: 24px;
+  fill: var(--text);
+}
+
+.theme-toggle .sun {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle .moon {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle .sun {
+  display: block;
+}
+
+/* Mini-map */
+.minimap {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  width: 200px;
+  height: 150px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-md);
+  opacity: 0.8;
+  transition: all var(--transition-fast);
+  overflow: hidden;
+}
+
+.minimap:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* Command Log Panel */
+.command-log {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  width: 300px;
+  max-height: 200px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-md);
+  padding: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  overflow-y: auto;
+  transition: all var(--transition-normal);
+}
+
+.command-log .entry {
+  margin-bottom: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--background);
+  transition: all var(--transition-fast);
+}
+
+.command-log .entry:hover {
+  background: var(--primary-light);
+  transform: translateX(4px);
+}
+
+/* Zoom Controls */
+.zoom-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.zoom-controls button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.zoom-controls button:hover {
+  transform: scale(1.1);
+}
+
+.zoom-controls button svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--text);
+}
+
+.zoom-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .zoom-controls button,
+[data-theme="dark"] .theme-toggle {
+  background: var(--surface);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+
+/* Tooltips */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.4;
+}
+
+[data-tooltip]:hover:before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-8px);
+}
+
+/* Remote Toggle */
+.remote-toggle {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.remote-toggle:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
