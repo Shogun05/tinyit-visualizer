@@ -75,6 +75,32 @@ body, html {
               color var(--transition-normal);
 }
 
+/* Main heading styles */
+.visualizer-heading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 0.5rem;
+  background-color: #000000; /* Black background */
+  color: white; /* White text for contrast */
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Adjust top positioning for containers to account for heading */
+#ExplainGitZen-Container .svg-container {
+  top: 60px; /* Increased to make room for heading */
+}
+
+#ExplainGitZen-Container .svg-container.remote-container {
+  top: 60px; /* Match top spacing of main container */
+}
+
 #last-command {
   position: absolute;
   bottom: 1rem;
@@ -152,7 +178,7 @@ span.cmd {
 
 .svg-container {
   margin-left: 0;
-  margin-bottom: 250px; /* Add space for control box at bottom */
+  margin-bottom: 250px; /* Space for control box */
   display: block;
   overflow: auto;
   border: 1px solid var(--border);
@@ -160,16 +186,19 @@ span.cmd {
   background-color: var(--surface);
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-normal);
+  height: calc(100% - 250px); /* Adjusted height to account for control box */
 }
 
 .svg-container.remote-container {
   position: absolute;
-  top: 0;
+  top: 40px; /* Match top padding of main container */
   right: 0;
+  width: 30%; /* Fixed width for remote container */
+  height: calc(100% - 290px); /* Account for top padding and control box */
   background-color: rgba(124, 58, 237, 0.05);
   border-left: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-  z-index: 100;
+  z-index: 10; /* Ensure it's above the main container */
 }
 
 #ExplainGitZen-Container {
@@ -178,55 +207,67 @@ span.cmd {
   bottom: 0;
   right: 0;
   left: 0;
+  overflow: hidden; /* Prevent scrollbars on the container */
 }
 
 #ExplainGitZen-Container .svg-container {
-  display: inline-block;
+  display: block;
   border: 1px dotted #AAA;
   position: absolute;
-  top: 0;
+  top: 40px; /* Top padding */
   bottom: 250px; /* Space for control box */
-  right: 0;
-  left: 0; /* Full width container */
-  margin-left: 0;
+  right: 30%; /* Make room for remote container */
+  left: 0;
+  margin: 0;
+  overflow: auto;
 }
 
 #ExplainGitZen-Container .svg-container.remote-container {
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: 40px;
+  right: 0;
   left: auto;
-  bottom: auto;
+  bottom: 250px;
+  width: 30%;
   background-color: #EFF1FF;
   border-left: 1px dotted #AAA;
   border-bottom: 1px dotted #AAA;
-  min-height: 400px;
+  z-index: 10;
+}
+
+/* Fix for duplicate remote containers */
+#ExplainGitZen-Container .svg-container.remote-container + .svg-container.remote-container {
+  display: none; /* Hide any duplicate remote containers */
 }
 
 #ExplainGitZen-Container .playground-container {
   position: absolute;
   top: 0;
-  bottom: 20px;
-  right: 20px;
-  left: 20px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 20px;
 }
 
 .remote-name-display {
   font-weight: bold;
   text-align: right;
+  padding: 10px;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
 }
 
 .control-box {
-  display: inline-block;
+  display: block;
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 250px; /* Height instead of width */
-  vertical-align: bottom;
+  height: 250px;
   border: 1px solid var(--border);
   background-color: var(--surface);
-  border-radius: 0.5rem;
+  border-radius: 0.5rem 0.5rem 0 0; /* Rounded corners only at top */
+  z-index: 20; /* Ensure it's above other containers */
 }
 
 .control-box select {
@@ -487,37 +528,25 @@ g.head-tag > text {
 /* Responsive Design */
 @media (max-width: 768px) {
   .svg-container {
-    margin-left: 0;
-    margin-top: 250px;
+    margin-bottom: 250px;
+  }
+  
+  #ExplainGitZen-Container .svg-container {
+    right: 0;
+    bottom: 250px;
+  }
+  
+  #ExplainGitZen-Container .svg-container.remote-container {
+    position: absolute;
+    top: 40px;
+    width: 100%;
+    height: 200px;
+    right: 0;
+    bottom: auto;
   }
   
   .control-box {
-    width: 100%;
     height: 250px;
-  }
-  
-  #last-command {
-    font-size: 2.5rem;
-  }
-  
-  .minimap {
-    display: none;
-  }
-  
-  .command-log {
-    width: calc(100% - 2rem);
-    max-height: 150px;
-  }
-  
-  .zoom-controls {
-    bottom: 0.5rem;
-  }
-  
-  .remote-toggle {
-    top: auto;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
   }
 }
 

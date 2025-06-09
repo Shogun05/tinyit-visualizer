@@ -74,6 +74,8 @@ require(['explaingit', 'demos', 'ui-enhancements'], function (explainGit, demos)
 
     function cleanupDom() {
         $('.svg-container.remote-container').remove();
+        // Also remove any existing heading when cleaning up
+        document.querySelector('.visualizer-heading')?.remove();
     }
 
     function clean() {
@@ -113,6 +115,12 @@ require(['explaingit', 'demos', 'ui-enhancements'], function (explainGit, demos)
 
     function open() {
         explainGit.reset();
+
+        // Add the heading
+        const heading = document.createElement('h1');
+        heading.className = 'visualizer-heading';
+        heading.textContent = 'Tinyit Visualizer';
+        document.body.appendChild(heading);
 
         var savedState = null;
         if (window.localStorage) {
