@@ -151,7 +151,8 @@ span.cmd {
 }
 
 .svg-container {
-  margin-left: 250px;
+  margin-left: 0;
+  margin-bottom: 250px; /* Add space for control box at bottom */
   display: block;
   overflow: auto;
   border: 1px solid var(--border);
@@ -184,9 +185,9 @@ span.cmd {
   border: 1px dotted #AAA;
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: 250px; /* Space for control box */
   right: 0;
-  left: 250px;
+  left: 0; /* Full width container */
   margin-left: 0;
 }
 
@@ -218,9 +219,10 @@ span.cmd {
 .control-box {
   display: inline-block;
   position: absolute;
-  top: 0;
+  left: 0;
+  right: 0;
   bottom: 0;
-  width: 250px;
+  height: 250px; /* Height instead of width */
   vertical-align: bottom;
   border: 1px solid var(--border);
   background-color: var(--surface);

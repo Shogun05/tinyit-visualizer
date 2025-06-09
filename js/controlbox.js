@@ -20,7 +20,7 @@ function(_yargs, d3, demos) {
   function ControlBox(config) {
     this.historyView = config.historyView;
     this.originView = config.originView;
-    this.initialMessage = config.initialMessage || 'Enter git commands below.';
+    this.initialMessage = config.initialMessage || 'Enter tinyit commands below.';
     this._commandHistory = [];
     this._currentCommand = -1;
     this._tempCommand = '';
@@ -135,7 +135,7 @@ function(_yargs, d3, demos) {
       input = cBoxContainer.append('input')
         .attr('type', 'text')
         .classed('input', true)
-        .attr('placeholder', 'enter git command');
+        .attr('placeholder', 'enter tinyit command');
 
       log.on('click', function () {
         if (d3.event.target === log.node()) {
@@ -229,27 +229,27 @@ function(_yargs, d3, demos) {
 
       if (entry.trim() === 'help' || entry.trim() === 'help()') {
         this.info('pres() = Turn on presenter mode')
-        this.info('undo = Undo the last git command')
-        this.info('redo = Redo the last undone git command')
+        this.info('undo = Undo the last tintyit command')
+        this.info('redo = Redo the last undone tintyit command')
         this.info('mode = Change mode (`local` or `remote`)')
         this.info('clear = Clear the history pane and reset the visualization')
         this.info()
-        this.info('Available Git Commands:')
-        this.info('`git branch`')
-        this.info('`git checkout`')
-        this.info('`git cherry_pick`')
-        this.info('`git commit`')
-        this.info('`git fetch`')
-        this.info('`git log`')
-        this.info('`git merge`')
-        this.info('`git pull`')
-        this.info('`git push`')
-        this.info('`git rebase`')
-        this.info('`git reflog`')
-        this.info('`git reset`')
-        this.info('`git rev_parse`')
-        this.info('`git revert`')
-        this.info('`git tag`')
+        this.info('Available tintyit Commands:')
+        this.info('`tinyit branch`')
+        this.info('`tinyit checkout`')
+        this.info('`tinyit cherry_pick`')
+        this.info('`tinyit commit`')
+        this.info('`tinyit fetch`')
+        this.info('`tinyit log`')
+        this.info('`tinyit merge`')
+        this.info('`tinyit pull`')
+        this.info('`tinyit push`')
+        this.info('`tinyit rebase`')
+        this.info('`tinyit reflog`')
+        this.info('`tinyit reset`')
+        this.info('`tinyit rev_parse`')
+        this.info('`tinyit revert`')
+        this.info('`tinyit tag`')
         return
       }
 
@@ -313,7 +313,7 @@ function(_yargs, d3, demos) {
 
       this._scrollToBottom();
 
-      if (split[0] !== 'git') {
+      if (split[0] !== 'tinyit') {
         return this.error();
       }
 
@@ -394,7 +394,7 @@ function(_yargs, d3, demos) {
 
     log: function(args) {
       if (args.length > 1) {
-        return this.error("'git log' can take at most one argument in this tool")
+        return this.error("'tinyit log' can take at most one argument in this tool")
       }
       var logs = this.getRepoView().getLogEntries(args[0] || 'head')
         .map(function(l) {
@@ -540,14 +540,14 @@ function(_yargs, d3, demos) {
         switch (arg) {
           case '--soft':
             this.info(
-              'The "--soft" flag works in real git, but ' +
+              'The "--soft" flag works in real tinyit, but ' +
               'I am unable to show you how it works in this demo. ' +
               'So I am just going to show you what "--hard" looks like instead.'
             );
             break;
           case '--mixed':
             this.info(
-              'The "--mixed" flag works in real git, but ' +
+              'The "--mixed" flag works in real tinyit, but ' +
               'I am unable to show you how it works in this demo. ' +
               'So I am just going to show you what "--hard" looks like instead.'
             );
@@ -889,7 +889,7 @@ function(_yargs, d3, demos) {
         subcommand = args[0]
         ref = args[1]
       } else {
-        this.error("'git reflog' can take at most two arguments in this tool")
+        this.error("'tinyit reflog' can take at most two arguments in this tool")
         return
       }
 
@@ -912,7 +912,7 @@ function(_yargs, d3, demos) {
           }).join('')
         )
       } else if (subcommand === "expire" || subcommand === "delete") {
-        this.info("Real git reflog supports the '" + subcommand +
+        this.info("Real tinyit reflog supports the '" + subcommand +
                   "' subcommand but this tool only supports 'show' and 'exists'")
       }
     }
