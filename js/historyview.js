@@ -776,10 +776,11 @@ define(['d3'], function() {
 
     _renderIdLabels: function() {
       this._renderText('id-label', function(d) {
-        return d.id + '..';
+        return d.id.substring(0, 6) + '..';
       }, 14);
       this._renderText('message-label', function(d) {
-        return d.message;
+        var message = d.message || '';
+        return message.length > 12 ? message.substring(0, 9) + '..' : message;
       }, 24);
     },
 

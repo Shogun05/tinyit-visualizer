@@ -156,16 +156,32 @@ function (explainGit, demos, ui, md5, RepoSizeTracker) {
         setTimeout(function() {
             const historyView = explainGit.historyView;
             if (historyView && historyView.commitData) {
-                repoSizeTracker.updateVisualizerSize(historyView.commitData);
-                repoSizeTracker.simulateGitRepoSize(historyView.commitData);
+                // Use demo-specific visualizer size if available
+                if (lastDemo.visualizerSize) {
+                    repoSizeTracker.updateVisualizerSize(null, lastDemo.visualizerSize);
+                } else {
+                    repoSizeTracker.updateVisualizerSize(historyView.commitData);
+                }
+                
+                // Use demo-specific git size if available, otherwise simulate
+                if (lastDemo.gitSize) {
+                    repoSizeTracker.updateGitRepoSize(lastDemo.gitSize);
+                } else {
+                    repoSizeTracker.simulateGitRepoSize(historyView.commitData);
+                }
             }
         }, 1000);
 
         // Listen for commit data changes
         window.addEventListener('commitDataChanged', function(e) {
             if (e.detail && e.detail.commitData) {
-                repoSizeTracker.updateVisualizerSize(e.detail.commitData);
-                repoSizeTracker.simulateGitRepoSize(e.detail.commitData);
+                // Only update dynamically if no preset sizes
+                if (!lastDemo.visualizerSize) {
+                    repoSizeTracker.updateVisualizerSize(e.detail.commitData);
+                }
+                if (!lastDemo.gitSize) {
+                    repoSizeTracker.simulateGitRepoSize(e.detail.commitData);
+                }
             }
         });
 

@@ -76,7 +76,14 @@ define(['d3'], function(d3) {
     },
 
     // Update the visualizer repo size
-    updateVisualizerSize: function(commitData) {
+    updateVisualizerSize: function(commitData, presetSize) {
+      if (presetSize) {
+        // Use preset size for demo pages
+        this.visualizerSize = presetSize;
+        this.updateDisplay();
+        return this;
+      }
+      
       // Calculate approximate size based on number of commits and complexity
       let size = 0;
       
