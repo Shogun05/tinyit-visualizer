@@ -48,7 +48,9 @@ require.config({
     'd3': 'vendor/d3',
     'explaingit': 'explaingit',
     'demos': 'demos',
-    'ui-enhancements': 'ui-enhancements'
+    'ui-enhancements': 'ui-enhancements',
+    'md5': 'md5',
+    'repo-size-tracker': 'repo-size-tracker'
   },
   shim: {
     'd3': {
@@ -57,7 +59,11 @@ require.config({
   }
 });
 
-require(['explaingit', 'demos', 'ui-enhancements'], function (explainGit, demos) {
+require(['explaingit', 'demos', 'ui-enhancements', 'md5', 'repo-size-tracker'], 
+function (explainGit, demos, ui, md5, RepoSizeTracker) {
+    // Create instance of the repo size tracker
+    var repoSizeTracker = new RepoSizeTracker();
+    
     function ready(fn) {
         if (document.readyState != 'loading') {
             fn();
@@ -76,6 +82,8 @@ require(['explaingit', 'demos', 'ui-enhancements'], function (explainGit, demos)
         $('.svg-container.remote-container').remove();
         // Also remove any existing heading when cleaning up
         document.querySelector('.visualizer-heading')?.remove();
+        // Remove size tracker if it exists
+        document.querySelector('.repo-size-tracker')?.remove();
     }
 
     function clean() {
@@ -121,6 +129,11 @@ require(['explaingit', 'demos', 'ui-enhancements'], function (explainGit, demos)
         heading.className = 'visualizer-heading';
         heading.textContent = 'Tinyit Visualizer';
         document.body.appendChild(heading);
+        
+        // Initialize the repo size tracker
+        setTimeout(function() {
+            repoSizeTracker.init(document.body);
+        }, 500);
 
         var savedState = null;
         if (window.localStorage) {
@@ -133,10 +146,28 @@ require(['explaingit', 'demos', 'ui-enhancements'], function (explainGit, demos)
             initialMessage: lastDemo.message,
             undoHistory: savedState,
             hvSavedState: savedState && savedState.stack[savedState.pointer].hv,
-            ovSavedState: savedState && savedState.stack[savedState.pointer].ov
+            ovSavedState: savedState && savedState.stack[savedState.pointer].ov,
+            md5: md5 // Pass MD5 module to explainGit
         });
 
         explainGit.open(initial);
+
+        // Update repo sizes after a short delay to ensure commits are loaded
+        setTimeout(function() {
+            const historyView = explainGit.historyView;
+            if (historyView && historyView.commitData) {
+                repoSizeTracker.updateVisualizerSize(historyView.commitData);
+                repoSizeTracker.simulateGitRepoSize(historyView.commitData);
+            }
+        }, 1000);
+
+        // Listen for commit data changes
+        window.addEventListener('commitDataChanged', function(e) {
+            if (e.detail && e.detail.commitData) {
+                repoSizeTracker.updateVisualizerSize(e.detail.commitData);
+                repoSizeTracker.simulateGitRepoSize(e.detail.commitData);
+            }
+        });
 
         // Dispatch git command event for command log
         window.dispatchEvent(new CustomEvent('gitCommand', {

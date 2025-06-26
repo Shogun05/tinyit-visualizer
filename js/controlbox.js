@@ -1,5 +1,5 @@
-define(['vendor/yargs-parser', 'd3', 'demos'],
-function(_yargs, d3, demos) {
+define(['vendor/yargs-parser', 'd3', 'demos', 'md5'],
+function(_yargs, d3, demos, md5Default) {
   "use strict";
 
   function yargs(str, opts) {
@@ -25,6 +25,7 @@ function(_yargs, d3, demos) {
     this._currentCommand = -1;
     this._tempCommand = '';
     this.rebaseConfig = {}; // to configure branches for rebase
+    this.md5 = config.md5 || md5Default; // Use provided MD5 or default
 
     this.undoHistory = config.undoHistory || {
       pointer: 0,
@@ -372,12 +373,23 @@ function(_yargs, d3, demos) {
         boolean: ['amend'],
         string: ['m']
       })
-      var msg = ""
+      var msg = opts.m || "Commit message"
+      
       this.transact(function() {
         if (opts.amend) {
-          this.getRepoView().amendCommit(opts.m || this.getRepoView().getCommit('head').message)
+          this.getRepoView().amendCommit(msg)
         } else {
-          this.getRepoView().commit(null, opts.m);
+          // Generate a commit object with an MD5 hash ID rather than just a string
+          var commitContent = msg + new Date().getTime() + Math.random();
+          var commitHash = this.md5.hash(commitContent);
+          
+          // Pass the hash as a commit object property rather than as a direct string
+          this.getRepoView().commit({id: commitHash}, msg);
+          
+          // Dispatch event for repository size tracker
+          window.dispatchEvent(new CustomEvent('commitDataChanged', {
+            detail: { commitData: this.getRepoView().commitData }
+          }));
         }
       }, function(before, after) {
         var reflogMsg = 'commit: ' + msg
