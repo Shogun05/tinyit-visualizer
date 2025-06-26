@@ -4,20 +4,10 @@ define([], function () {
     title: 'Free Explore',
     key: 'free',
     message: 'Have fun!',
+    gitSize: 2048, // Basic repo with one commit
+    visualizerSize: 256, // Simple visualization data
     commitData: [
         {id: 'e137e9b', tags: ['master'], message: 'first commit'},
-    ]
-  }
-
-  var freeWithRemote = {
-    title: 'Free Explore with Remote',
-    key: 'free-remote',
-    message: 'Have fun!',
-    commitData: [
-        {id: 'e137e9b', tags: ['master', 'origin/master'], message: 'first commit'},
-    ],
-    originData: [
-        {id: 'e137e9b', tags: ['master'], message: 'first commit'}
     ]
   }
 
@@ -25,6 +15,8 @@ define([], function () {
     title: 'Upstream Changes',
     key: 'upstream-changes',
     message: 'Someone else has been working here!',
+    gitSize: 8192, // Multiple branches and remote tracking
+    visualizerSize: 1024, // More complex visualization
     currentBranch: "feature",
     commitData: [
       {
@@ -73,6 +65,8 @@ define([], function () {
     title: 'Rewritten Remote History',
     key: 'rewritten-history',
     message: 'Someone force-pushed and re-wrote history on the remote!',
+    gitSize: 15360, // Complex history with rewrites and orphaned commits
+    visualizerSize: 2048, // Heavy visualization data
     currentBranch: "feature",
     commitData: [
       {
@@ -175,74 +169,12 @@ define([], function () {
 
   }
 
-  var revert = {
-    title: 'Revert',
-    key: 'revert',
-    message: 'Oops, let\'s revert some commits',
-    commitData: [
-      {
-        "id": "e137e9b",
-        "tags": [],
-        "message": "first commit",
-        "parent": "initial",
-        "cx": 50,
-        "cy": 330,
-        "branchless": false
-      },
-      {
-        "id": "dd70cfe",
-        "tags": [],
-        "parent": "e137e9b",
-        "cx": 140,
-        "cy": 330,
-        "branchless": false
-      },
-      {
-        "id": "2545b6f",
-        "tags": [],
-        "parent": "dd70cfe",
-        "cx": 230,
-        "cy": 330,
-        "branchless": false
-      },
-      {
-        "id": "3d6ef16",
-        "tags": [],
-        "parent": "dd70cfe",
-        "cx": 230,
-        "cy": 240,
-        "branchless": false
-      },
-      {
-        "id": "077415f",
-        "tags": [
-          "feature"
-        ],
-        "parent": "3d6ef16",
-        "cx": 320,
-        "cy": 240,
-        "branchless": false
-      },
-      {
-        "parent2": "077415f",
-        "id": "8686fb6",
-        "tags": [
-          "master",
-          "HEAD"
-        ],
-        "message": "Merge",
-        "parent": "2545b6f",
-        "cx": 410,
-        "cy": 330,
-        "branchless": false
-      }
-    ]
-  }
-
   var cherryPick = {
     title: 'Cherry Pick',
     key: 'cherry-pick',
     message: 'Let\'s pick some commits',
+    gitSize: 12288, // Multiple branches with selective commits
+    visualizerSize: 1792, // Complex branching visualization
     commitData: [
       {
         "id": "e137e9b",
@@ -351,12 +283,14 @@ define([], function () {
     title: 'Rebasing',
     key: 'rebase',
     message: 'Try rebasing the `feature` branch',
+    gitSize: 4096, // Medium repo for rebase demonstration
+    visualizerSize: 512, // Moderate visualization complexity
     commitData: [
         {id: 'e137e9b', tags: ['master'], message: 'first commit'}
     ]
   }
 
   return [
-    free, freeWithRemote, upstreamChanges, rewrittenHistory, revert, cherryPick
+    free, upstreamChanges, rewrittenHistory, cherryPick
   ]
 })
